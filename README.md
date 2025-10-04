@@ -6,7 +6,7 @@
 ![Skill](https://img.shields.io/badge/skill-Network_Forensics-orange)
 ![Skill](https://img.shields.io/badge/skill-Incident_Response-red)
 
----
+
 
 ## Project Overview
 
@@ -14,7 +14,7 @@ This repository documents my cybersecurity investigation completed as part of th
 
 The task involved **analyzing a packet capture (PCAP)** file to investigate suspicious network activity from a user within the ANZ network. The objective was to identify the **websites visited**, **files accessed**, and **images viewed or downloaded** — ultimately producing a professional **forensic investigation report**.
 
----
+
 
 ## Objectives
 
@@ -24,7 +24,7 @@ The task involved **analyzing a packet capture (PCAP)** file to investigate susp
 - Document findings in a structured investigation report  
 - Demonstrate use of digital forensics and network analysis tools  
 
----
+
 
 ## Tools & Technologies Used
 
