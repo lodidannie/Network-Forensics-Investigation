@@ -18,7 +18,7 @@ The task involved **analyzing a packet capture (PCAP)** file to investigate susp
 
 ## Objectives
 
-- Analyze a PCAP file containing user network traffic  
+- Analyze a packet capture (PCAP) file containing user network traffic  
 - Detect suspicious connections and web activity  
 - Reconstruct and extract transferred files and images  
 - Document findings in a structured investigation report  
