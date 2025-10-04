@@ -37,7 +37,7 @@ The task involved **analyzing a packet capture (PCAP)** file to investigate susp
 | **HxD Editor** | Reading ASCII characters and carving out document headers and footers |
 | **Markdown / PDF report** | Documentation and presentation of findings |
 
----
+
 
 ## My Investigation Process
 
