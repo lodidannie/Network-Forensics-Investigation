@@ -1,0 +1,127 @@
+# =====================================================================
+# Wireshark Display Filters — Network Forensics Investigation (ANZ)
+# Author: Daniel Lodi
+# Date: 10/04/2025
+# Description:
+#   Custom Wireshark filters used during analysis of suspicious user activity.
+#   These filters isolate HTTP traffic, file transfers, DNS queries, and
+#   potential exfiltration channels from the provided packet capture (PCAP).
+# =====================================================================
+
+# ---------------------------------------------------------------------
+#  1. General Traffic Overview
+# ---------------------------------------------------------------------
+
+# Show all TCP and UDP traffic
+tcp || udp
+
+# Show only traffic to/from internal IP (example local subnet)
+ip.addr == 192.168.1.0/24
+
+# Show only traffic involving a suspicious external host (replace IP)
+ip.addr == 45.33.32.156
+
+# ---------------------------------------------------------------------
+#  2. Web and HTTP/HTTPS Traffic
+# ---------------------------------------------------------------------
+
+# Show all HTTP traffic
+http
+
+# Show HTTP requests and responses over port 80
+tcp.port == 80 && http
+
+# Show all HTTP GET requests (possible downloads or image loads)
+http.request.method == "GET"
+
+# Show HTTP POST requests (potential data exfiltration)
+http.request.method == "POST"
+
+# Show HTTP traffic containing image or document file types
+http.content_type contains "image" || 
+http.content_type contains "jpeg" ||
+http.content_type contains "png" ||
+http.content_type contains "pdf" ||
+http.content_type contains "msword"
+
+# Show all HTTP requests containing file extensions
+http.request.uri contains ".jpg" || 
+http.request.uri contains ".png" ||
+http.request.uri contains ".gif" ||
+http.request.uri contains ".pdf" ||
+http.request.uri contains ".docx" ||
+http.request.uri contains ".zip" ||
+http.request.uri contains ".exe"
+
+# ---------------------------------------------------------------------
+#  3. File Transfer and Download Indicators
+# ---------------------------------------------------------------------
+
+# Show all packets with potential downloadable content
+http.content_length > 1000
+
+# Show any file transfers over FTP
+ftp || ftp-data
+
+# Show any SMB file sharing traffic
+smb || smb2
+
+# Show possible encoded/exfil data over HTTP (Base64 patterns)
+data-text-lines matches "[A-Za-z0-9+/=]{20,}"
+
+# ---------------------------------------------------------------------
+#  4. Domain & DNS Analysis
+# ---------------------------------------------------------------------
+
+# Show all DNS queries
+dns
+
+# Show DNS queries for suspicious or unknown domains
+dns.qry.name contains "suspicious" || dns.qry.name contains "malware"
+
+# Show NXDOMAIN responses (failed DNS lookups — potential malicious C2 beaconing)
+dns.flags.rcode == 3
+
+# ---------------------------------------------------------------------
+#  5. Network Layer & Suspicious Activity
+# ---------------------------------------------------------------------
+
+# Show TCP retransmissions (possible connection instability or covert channels)
+tcp.analysis.retransmission
+
+# Show unusual destination ports (non-standard services)
+tcp.dstport > 1024 && !icmp && !dns
+
+# Show all packets with HTTP user-agent strings (identify the browser)
+http.user_agent
+
+# ---------------------------------------------------------------------
+#  6. Session Reconstruction & Evidence Extraction
+# ---------------------------------------------------------------------
+
+# Follow TCP stream manually (menu-based)
+# Right-click any packet → Follow → TCP Stream
+
+# Extract all HTTP objects (menu-based)
+# File → Export Objects → HTTP
+
+# ---------------------------------------------------------------------
+#  7. Potential Malicious Activity
+# ---------------------------------------------------------------------
+
+# Show all traffic to known suspicious domains (replace values)
+http.host contains "suspicious-domain" || 
+http.host contains "unknown-site"
+
+# Show packets with executable downloads
+http.request.uri contains ".exe"
+
+# Show all packets with uncommon MIME types (e.g., application/octet-stream)
+http.content_type == "application/octet-stream"
+
+# Show HTTP responses with server errors (may indicate probing or failed attempts)
+http.response.code >= 400
+
+# ---------------------------------------------------------------------
+#  End of File
+# ---------------------------------------------------------------------
